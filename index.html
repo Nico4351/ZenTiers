@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenTiers | Rankings</title>
+  <link rel="preconnect" href="https://minotar.net">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="logo" href="#" aria-label="ZenTiers home">
+        <span>ZEN</span><strong>TIERS</strong>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="muted" href="#"><span>H</span>Home</a>
+        <a class="active" href="#"><span>R</span>Rankings</a>
+        <a href="#"><span>D</span>Discords <small>v</small></a>
+        <a href="#"><span>A</span>API Docs</a>
+      </nav>
+
+      <label class="search">
+        <span>S</span>
+        <input id="searchInput" type="search" placeholder="Search player...">
+        <kbd>/</kbd>
+      </label>
+    </header>
+
+    <main class="rank-card">
+      <section class="tabs" id="modeTabs" aria-label="Ranking modes"></section>
+
+      <section class="toolbar">
+        <button class="info" type="button"><span>i</span> Information</button>
+      </section>
+
+      <section class="table-shell" aria-label="Rankings table">
+        <div class="table-head">
+          <span>#</span>
+          <span>PLAYER</span>
+          <span>REGION</span>
+          <span>TIERS</span>
+        </div>
+        <div id="playerRows" class="rows"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

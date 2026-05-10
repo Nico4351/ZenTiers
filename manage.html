@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenTiers Manager</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070c12;
+      --panel: #111923;
+      --panel-2: #141d29;
+      --line: #1d2a38;
+      --text: #d9e7fb;
+      --muted: #7f8da3;
+      --green: #45db79;
+      --red: #ff5967;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .wrap {
+      width: min(980px, calc(100% - 28px));
+      margin: 22px auto 48px;
+    }
+
+    header,
+    .panel,
+    .player-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      color: #ffb13f;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: #9ec9ff;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    label.full,
+    .mode-ranks,
+    button.full,
+    #message {
+      grid-column: 1 / -1;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #0d141d;
+      color: var(--text);
+      padding: 0 12px;
+      outline: 0;
+    }
+
+    input[type="file"] {
+      display: flex;
+      align-items: center;
+      height: auto;
+      min-height: 44px;
+      padding: 9px 12px;
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .add {
+      background: linear-gradient(180deg, #62f092, #22994d);
+      color: #06120a;
+    }
+
+    .edit {
+      background: rgba(158, 201, 255, .14);
+      color: #9ec9ff;
+    }
+
+    .remove {
+      background: rgba(255, 89, 103, .13);
+      color: #ff8d98;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .mode-ranks {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .mode-ranks h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .rank-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .rank-grid label {
+      grid-template-columns: 1fr 110px;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+    }
+
+    .rank-grid span {
+      color: var(--text);
+    }
+
+    #message {
+      min-height: 22px;
+      color: var(--green);
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .player-card {
+      display: grid;
+      grid-template-columns: 48px 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+    }
+
+    .player-card img {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      image-rendering: pixelated;
+      background: #0d141d;
+    }
+
+    .player-card strong,
+    .player-card small {
+      display: block;
+    }
+
+    .player-card small {
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 800px) {
+      header,
+      .grid,
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      .rank-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>ZenTiers Manager</h1>
+        <p class="hint">This page only manages custom players saved in this browser.</p>
+      </div>
+      <a href="index.html">View rankings</a>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Add player</h2>
+        <p class="hint">Upload a PNG/JPG skin image, or leave it empty to use the Minecraft username avatar automatically.</p>
+
+        <form id="playerForm">
+          <label>
+            Player name
+            <input id="nameInput" type="text" placeholder="Player IGN" required>
+          </label>
+
+          <label>
+            Region
+            <select id="regionInput" required>
+              <option>NA</option>
+              <option>EU</option>
+              <option>AS</option>
+              <option>OCE</option>
+              <option>SA</option>
+            </select>
+          </label>
+
+          <label>
+            Points
+            <input id="pointsInput" type="number" min="0" value="100" required>
+          </label>
+
+          <label>
+            Title
+            <input id="titleInput" type="text" value="Combat Specialist" required>
+          </label>
+
+          <div class="mode-ranks">
+            <h3>Gamemode tiers</h3>
+            <div class="rank-grid" id="rankGrid"></div>
+          </div>
+
+          <label class="full">
+            Skin image
+            <input id="skinInput" type="file" accept="image/png,image/jpeg,image/webp">
+          </label>
+
+          <button class="add full" id="submitButton" type="submit">Add player</button>
+          <button class="remove full" id="cancelEditButton" type="button" hidden>Cancel edit</button>
+          <p id="message" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <aside class="panel">
+        <h2>Custom players</h2>
+        <p class="hint">Players added here are saved in this browser and can be removed here.</p>
+        <div id="playerList" class="list"></div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "zentiers.players";
+    const MODES = ["Sword", "Pot", "Vanilla", "UHC", "NethOP", "SMP", "Axe", "Mace"];
+    const RANKS = ["", "HT1", "LT1", "HT2", "LT2", "HT3", "LT3", "HT4", "LT4", "HT5", "LT5"];
+    const form = document.getElementById("playerForm");
+    const list = document.getElementById("playerList");
+    const message = document.getElementById("message");
+    const rankGrid = document.getElementById("rankGrid");
+    const submitButton = document.getElementById("submitButton");
+    const cancelEditButton = document.getElementById("cancelEditButton");
+    let editingId = "";
+
+    function getPlayers() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function savePlayers(players) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+    }
+
+    function avatar(player) {
+      return player.skin || `https://minotar.net/avatar/${encodeURIComponent(player.name)}/64`;
+    }
+
+    function renderRankInputs(tiers = {}) {
+      rankGrid.innerHTML = MODES.map((mode) => `
+        <label>
+          <span>${mode}</span>
+          <select data-mode-rank="${mode}">
+            ${RANKS.map((rank) => `<option value="${rank}" ${tiers[mode] === rank ? "selected" : ""}>${rank || "None"}</option>`).join("")}
+          </select>
+        </label>
+      `).join("");
+    }
+
+    function selectedTiers() {
+      return [...rankGrid.querySelectorAll("[data-mode-rank]")].reduce((tiers, select) => {
+        if (select.value) {
+          tiers[select.dataset.modeRank] = select.value;
+        }
+        return tiers;
+      }, {});
+    }
+
+    function readSkin(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          resolve("");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Could not read skin image."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderList() {
+      const players = getPlayers();
+      if (!players.length) {
+        list.innerHTML = '<p class="empty">No custom players yet.</p>';
+        return;
+      }
+
+      list.innerHTML = players.map((player) => {
+        const mode = Object.keys(player.tiers)[0];
+        const rank = player.tiers[mode];
+        return `
+          <article class="player-card">
+            <img src="${avatar(player)}" alt="${player.name} skin">
+            <span>
+              <strong>${player.name}</strong>
+              <small>${player.region} - ${rank} ${mode}</small>
+            </span>
+            <button class="edit" type="button" data-edit-id="${player.id}">Edit</button>
+            <button class="remove" type="button" data-id="${player.id}">Remove</button>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function resetEditor(text = "") {
+      editingId = "";
+      form.reset();
+      document.getElementById("pointsInput").value = 100;
+      document.getElementById("titleInput").value = "Combat Specialist";
+      renderRankInputs();
+      submitButton.textContent = "Add player";
+      cancelEditButton.hidden = true;
+      message.textContent = text;
+    }
+
+    function editPlayer(id) {
+      const player = getPlayers().find((item) => item.id === id);
+      if (!player) return;
+
+      editingId = id;
+      document.getElementById("nameInput").value = player.name;
+      document.getElementById("regionInput").value = player.region;
+      document.getElementById("pointsInput").value = player.points;
+      document.getElementById("titleInput").value = player.title;
+      document.getElementById("skinInput").value = "";
+      renderRankInputs(player.tiers);
+      submitButton.textContent = "Save player";
+      cancelEditButton.hidden = false;
+      message.textContent = `Editing ${player.name}. Upload a new skin only if you want to replace the current one.`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById("nameInput").value.trim();
+      const region = document.getElementById("regionInput").value;
+      const tiers = selectedTiers();
+      const points = Number(document.getElementById("pointsInput").value);
+      const title = document.getElementById("titleInput").value.trim();
+      const skinFile = document.getElementById("skinInput").files[0];
+      const wasEditing = Boolean(editingId);
+      const existingPlayer = getPlayers().find((player) => player.id === editingId);
+      const skin = skinFile ? await readSkin(skinFile) : existingPlayer?.skin || "";
+
+      if (!Object.keys(tiers).length) {
+        message.textContent = "Pick at least one gamemode rank.";
+        return;
+      }
+
+      let players = getPlayers();
+      const nextPlayer = {
+        id: editingId || `${Date.now()}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        name,
+        region,
+        title,
+        points,
+        accent: "dark",
+        skin,
+        tiers,
+      };
+
+      if (editingId) {
+        players = players.map((player) => player.id === editingId ? nextPlayer : player);
+      } else {
+        players.push(nextPlayer);
+      }
+
+      savePlayers(players);
+      resetEditor(`${name} was ${wasEditing ? "saved" : "added"}. Open or refresh the rankings page to see changes.`);
+      renderList();
+    });
+
+    list.addEventListener("click", (event) => {
+      const editButton = event.target.closest("[data-edit-id]");
+      if (editButton) {
+        editPlayer(editButton.dataset.editId);
+        return;
+      }
+
+      const button = event.target.closest("[data-id]");
+      if (!button) return;
+
+      const players = getPlayers().filter((player) => player.id !== button.dataset.id);
+      savePlayers(players);
+      if (editingId === button.dataset.id) {
+        resetEditor("Player removed.");
+      } else {
+        message.textContent = "Player removed.";
+      }
+      renderList();
+    });
+
+    cancelEditButton.addEventListener("click", () => {
+      resetEditor("Edit cancelled.");
+    });
+
+    renderRankInputs();
+    renderList();
+  </script>
+</body>
+</html>
